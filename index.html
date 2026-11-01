@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Back to de Niro</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>BACK TO DE NIRO</h1>
+        <p class="tagline">
+            Every actor has a connection. Find yours.
+        </p>
+    </header>
+
+    <main>
+
+        <section class="welcome">
+
+            <h2>Can you find your way back?</h2>
+
+            <p>
+                Start with a random film.
+                Navigate through actors and their filmographies
+                until you reach Robert De Niro.
+            </p>
+
+            <button id="startButton">
+                START GAME
+            </button>
+
+        </section>
+
+        <section class="game-info">
+
+            <div class="info-card">
+                <h3>CONNECTIONS</h3>
+                <p id="connectionCount">0</p>
+            </div>
+
+            <div class="info-card">
+                <h3>MOVES</h3>
+                <p id="moveCount">0</p>
+            </div>
+
+        </section>
+
+        <section class="movie-section">
+
+            <h2 id="gameTitle">Your starting film</h2>
+
+            <div id="movieDisplay">
+                <p>
+                    Your random starting movie will appear here.
+                </p>
+            </div>
+
+        </section>
+
+        <section class="instructions">
+
+            <h2>How to play</h2>
+
+            <ol>
+                <li>Receive a random starting movie.</li>
+                <li>Select an actor from its cast.</li>
+                <li>Explore another movie featuring that actor.</li>
+                <li>Continue making connections.</li>
+                <li>Reach Robert De Niro to win!</li>
+            </ol>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Back to de Niro | A Movie Connection Game</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
