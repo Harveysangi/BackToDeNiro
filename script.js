@@ -1,4 +1,4 @@
-
+﻿
 const TMDB_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MzVmOTJlZTZhMjk2ZGM5MzU3ODZmMGUzYzBkOTFhMSIsIm5iZiI6MTc5MzQ4NTU5OS4yMDg5OTk5LCJzdWIiOiI2YWU2NmIxZjc4YjRlZDExMDI4YWFkNjkiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.HS9eXjIBZgR3BWH3vznvPX2Ypi0mI1Odw2knCEgBd48";
 
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -207,19 +207,26 @@ async function getRandomStartingMovie() {
     DISPLAY MOVIE AND CAST
 ========================================== */
 
-// Display the starting movie and its cast
+// Display the current movie and its cast
 function displayStartingMovie(movie, cast) {
 
     // Clear the previous content
     movieDisplay.innerHTML = "";
 
-    // Create the movie poster
-    const poster = document.createElement("img");
+    // Create the main movie information container
+    const movieInfo = document.createElement("div");
+    movieInfo.className = "current-movie";
 
+    // Create the movie poster
     if (movie.poster_path) {
+
+        const poster = document.createElement("img");
+
         poster.src = IMAGE_URL + movie.poster_path;
         poster.alt = movie.title + " poster";
         poster.className = "movie-poster";
+
+        movieInfo.appendChild(poster);
     }
 
     // Create the movie title
@@ -232,42 +239,76 @@ function displayStartingMovie(movie, cast) {
         : "Unknown";
 
     const year = document.createElement("p");
+    year.className = "movie-year";
     year.textContent = "Released: " + releaseYear;
 
     // Create the movie rating
     const rating = document.createElement("p");
-    rating.textContent = "TMDB Rating: " + movie.vote_average + "/10";
+    rating.className = "movie-rating";
+    rating.textContent = "★ " +
+        (movie.vote_average ? movie.vote_average.toFixed(1) : "N/A") +
+        " / 10";
+
+    movieInfo.appendChild(title);
+    movieInfo.appendChild(year);
+    movieInfo.appendChild(rating);
 
     // Create the cast heading
     const castHeading = document.createElement("h3");
-    castHeading.textContent = "Select an actor";
+    castHeading.className = "section-heading";
+    castHeading.textContent = "Choose an actor to continue";
 
     // Create a container for the actors
     const castContainer = document.createElement("div");
     castContainer.className = "cast-container";
 
-      // Display the first 20 cast members
+    // Display the first 20 cast members
     cast.slice(0, 20).forEach(actor => {
 
+        // Create an actor card
         const actorButton = document.createElement("button");
+        actorButton.className = "actor-card";
+        actorButton.type = "button";
 
-        actorButton.textContent = actor.name;
-        actorButton.className = "actor-button";
+        // Create actor image
+        if (actor.profile_path) {
+
+            const actorImage = document.createElement("img");
+
+            actorImage.src = IMAGE_URL + actor.profile_path;
+            actorImage.alt = actor.name;
+            actorImage.className = "actor-image";
+
+            actorButton.appendChild(actorImage);
+
+        } else {
+
+            const placeholder = document.createElement("div");
+            placeholder.className = "actor-placeholder";
+            placeholder.textContent = "?";
+
+            actorButton.appendChild(placeholder);
+        }
+
+        // Create actor name
+        const actorName = document.createElement("span");
+        actorName.className = "actor-name";
+        actorName.textContent = actor.name;
+
+        actorButton.appendChild(actorName);
 
         // Prevent selecting an actor more than once
         if (usedActorIds.has(actor.id)) {
 
             actorButton.disabled = true;
-            actorButton.textContent += " (Used)";
-
+            actorButton.classList.add("used-card");
+            actorName.textContent += " (Used)";
         }
 
+        // Actor selection event
         actorButton.addEventListener("click", async function() {
-            if (gameOver) {
-                return;
-            }
-            // Stop if this actor has already been selected
-            if (usedActorIds.has(actor.id)) {
+
+            if (gameOver || usedActorIds.has(actor.id)) {
                 return;
             }
 
@@ -277,23 +318,22 @@ function displayStartingMovie(movie, cast) {
 
                 const actorMovies = await getActorMovies(actor.id);
 
-// Record the selected actor
-selectedActor = actor;
+                // Record the selected actor
+                selectedActor = actor;
+                usedActorIds.add(actor.id);
 
-usedActorIds.add(actor.id);
+                connectionCountValue++;
 
-connectionCountValue++;
+                connectionHistory.push({
+                    type: "actor",
+                    name: actor.name
+                });
 
-connectionHistory.push({
-    type: "actor",
-    name: actor.name
-});
+                updateGameStats();
 
-updateGameStats();
+                // Display the actor's films
+                displayActorMovies(actor, actorMovies);
 
-
-// Otherwise, continue the game
-displayActorMovies(actor, actorMovies);
             } catch (error) {
 
                 console.error(error);
@@ -304,21 +344,16 @@ displayActorMovies(actor, actorMovies);
         });
 
         castContainer.appendChild(actorButton);
-        
+
     });
 
     // Add everything to the page
-    if (movie.poster_path) {
-        movieDisplay.appendChild(poster);
-    }
-
-    movieDisplay.appendChild(title);
-    movieDisplay.appendChild(year);
-    movieDisplay.appendChild(rating);
+    movieDisplay.appendChild(movieInfo);
     movieDisplay.appendChild(castHeading);
     movieDisplay.appendChild(castContainer);
 
-    gameTitle.textContent = "YOUR STARTING MOVIE";
+    gameTitle.textContent = "CURRENT FILM";
+
     displayConnectionHistory();
 }
 
@@ -328,12 +363,18 @@ function displayActorMovies(actor, movies) {
 
     movieDisplay.innerHTML = "";
 
+    // Create the heading
     const heading = document.createElement("h2");
     heading.textContent = actor.name + "'s Films";
 
-    movieDisplay.appendChild(heading);
+    const description = document.createElement("p");
+    description.className = "film-description";
+    description.textContent = "Select a film to continue your journey.";
 
-    // Remove duplicate films and sort by release date
+    movieDisplay.appendChild(heading);
+    movieDisplay.appendChild(description);
+
+    // Remove duplicate films and sort by popularity
     const uniqueMovies = movies
         .filter((movie, index, self) =>
             self.findIndex(item => item.id === movie.id) === index
@@ -343,30 +384,95 @@ function displayActorMovies(actor, movies) {
             (b.popularity || 0) - (a.popularity || 0)
         );
 
-    // Create a button for each film
-  // Only display films that haven't been selected before
+    // Only display films that haven't been selected before
     const availableMovies = uniqueMovies.filter(movie =>
         !usedMovieIds.has(movie.id)
     );
 
-    // Create a button for each available film
-    availableMovies.slice(0, 25).forEach(movie => {
+    // Get the 25 most popular films
+    const moviesToDisplay = availableMovies.slice(0, 25);
+
+    // Ensure a valid De Niro connecting film is available
+    const connectingMovie = availableMovies.find(movie =>
+        deNiroMovieIds.has(movie.id)
+    );
+
+    if (
+        connectingMovie &&
+        !moviesToDisplay.some(movie => movie.id === connectingMovie.id)
+    ) {
+
+        if (moviesToDisplay.length >= 25) {
+            moviesToDisplay[moviesToDisplay.length - 1] = connectingMovie;
+        } else {
+            moviesToDisplay.push(connectingMovie);
+        }
+
+    }
+
+    // Create the movie grid
+    const movieGrid = document.createElement("div");
+    movieGrid.className = "movie-grid";
+
+    // Create a card for each available film
+    moviesToDisplay.forEach(movie => {
 
         const filmButton = document.createElement("button");
 
-        const releaseYear = movie.release_date.substring(0, 4);
+        filmButton.className = "movie-card";
+        filmButton.type = "button";
 
-        filmButton.textContent =
-            movie.title + " (" + releaseYear + ")";
+        // Create the movie poster
+        if (movie.poster_path) {
 
-        filmButton.className = "actor-button";
+            const poster = document.createElement("img");
 
+            poster.src = IMAGE_URL + movie.poster_path;
+            poster.alt = movie.title + " poster";
+            poster.className = "film-poster";
+
+            filmButton.appendChild(poster);
+
+        } else {
+
+            const placeholder = document.createElement("div");
+
+            placeholder.className = "film-placeholder";
+            placeholder.textContent = "No poster available";
+
+            filmButton.appendChild(placeholder);
+        }
+
+        // Create movie information container
+        const movieDetails = document.createElement("div");
+        movieDetails.className = "film-details";
+
+        // Movie title
+        const filmTitle = document.createElement("h3");
+        filmTitle.textContent = movie.title;
+
+        // Release year
+        const releaseYear = document.createElement("p");
+        releaseYear.className = "film-year";
+        releaseYear.textContent = movie.release_date.substring(0, 4);
+
+        // Movie rating
+        const filmRating = document.createElement("p");
+        filmRating.className = "film-rating";
+
+        filmRating.textContent = "★ " +
+            (movie.vote_average ? movie.vote_average.toFixed(1) : "N/A");
+
+        movieDetails.appendChild(filmTitle);
+        movieDetails.appendChild(releaseYear);
+        movieDetails.appendChild(filmRating);
+
+        filmButton.appendChild(movieDetails);
+
+        // Film selection event
         filmButton.addEventListener("click", async function() {
-            if (gameOver) {
-                return;
-}
-            // Prevent selecting a film more than once
-            if (usedMovieIds.has(movie.id)) {
+
+            if (gameOver || usedMovieIds.has(movie.id)) {
                 return;
             }
 
@@ -374,32 +480,6 @@ function displayActorMovies(actor, movies) {
 
                 gameTitle.textContent = "LOADING FILM...";
                 movieDisplay.textContent = "Retrieving cast...";
-
-                // Retrieve the selected film's cast
-                const cast = await getMovieCast(movie.id);
-                // Check whether Robert De Niro appears in this film
-                if (deNiroMovieIds.has(movie.id)) {
-
-              // Record the selected film
-                usedMovieIds.add(movie.id);
-
-              moveCountValue++;
-
-               connectionHistory.push({
-               type: "movie",
-             name: movie.title,
-               year: movie.release_date.substring(0, 4)
-    });
-
-    updateGameStats();
-
-    // Display the winning screen
-    displayWinScreen(selectedActor, movie);
-
-    return;
-}
-                // Update the current movie
-                currentMovie = movie;
 
                 // Record the selected film
                 usedMovieIds.add(movie.id);
@@ -414,6 +494,20 @@ function displayActorMovies(actor, movies) {
 
                 updateGameStats();
 
+                // Check whether Robert De Niro appears in this film
+                if (deNiroMovieIds.has(movie.id)) {
+
+                    displayWinScreen(selectedActor, movie);
+                    return;
+
+                }
+
+                // Retrieve the selected film's cast
+                const cast = await getMovieCast(movie.id);
+
+                // Update the current movie
+                currentMovie = movie;
+
                 // Display the new film and its cast
                 displayStartingMovie(movie, cast);
 
@@ -426,16 +520,19 @@ function displayActorMovies(actor, movies) {
                 gameTitle.textContent = "ERROR LOADING FILM";
 
             }
-            
+
         });
 
-        movieDisplay.appendChild(filmButton);
+        movieGrid.appendChild(filmButton);
 
     });
+
+    movieDisplay.appendChild(movieGrid);
+
     gameTitle.textContent = "SELECTED ACTOR: " + actor.name;
+
     displayConnectionHistory();
 }
-
 /* ==========================================
    DISPLAY CONNECTION HISTORY
 ========================================== */

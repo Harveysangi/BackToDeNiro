@@ -7,231 +7,646 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: #151515;
     color: #ffffff;
     font-family: Arial, sans-serif;
+    line-height: 1.6;
+    min-width: 320px;
 }
 
-/* Header */
+/* =========================================
+   HEADER
+   ========================================= */
 
 header {
     text-align: center;
-    padding: 45px 20px;
+    padding: clamp(25px, 5vw, 45px) 20px;
     border-bottom: 1px solid #9b792e;
 }
 
-header h1 {
-    color: #d4af37;
-    font-size: 38px;
-    letter-spacing: 5px;
-}
+    header h1 {
+        color: #d4af37;
+        font-size: clamp(25px, 5vw, 38px);
+        letter-spacing: clamp(2px, 1vw, 5px);
+        line-height: 1.2;
+    }
 
 .tagline {
     color: #b5b5b5;
     margin-top: 12px;
+    font-size: clamp(13px, 2vw, 16px);
 }
 
-/* Main content */
+/* =========================================
+   MAIN CONTENT
+   ========================================= */
 
 main {
-    max-width: 900px;
-    margin: auto;
-    padding: 30px 20px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: clamp(15px, 4vw, 30px);
 }
 
-/* Welcome section */
+/* =========================================
+   WELCOME SECTION
+   ========================================= */
 
 .welcome {
     text-align: center;
-    padding: 45px 20px;
+    padding: clamp(25px, 5vw, 45px) 15px;
 }
 
-.welcome h2 {
-    font-size: 30px;
-    margin-bottom: 20px;
-}
+    .welcome h2 {
+        font-size: clamp(23px, 4vw, 30px);
+        margin-bottom: 20px;
+    }
 
-.welcome p {
-    color: #b5b5b5;
-    line-height: 1.7;
-    max-width: 600px;
-    margin: 0 auto 25px;
-}
+    .welcome p {
+        color: #b5b5b5;
+        line-height: 1.7;
+        max-width: 600px;
+        margin: 0 auto 25px;
+    }
 
-/* Start button */
+/* =========================================
+   BUTTONS
+   ========================================= */
 
 button {
     background-color: #d4af37;
     color: #151515;
     border: none;
-    padding: 15px 35px;
+    padding: 13px 25px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    min-height: 44px;
+    touch-action: manipulation;
 }
 
-button:hover {
-    background-color: #f0d46c;
-    transform: scale(1.04);
+/* Hover effects only on devices that support hovering */
+
+@media (hover: hover) {
+    button:hover:not(:disabled) {
+        background-color: #f0d46c;
+        transform: scale(1.03);
+    }
 }
 
-/* Game statistics */
+button:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   GAME STATISTICS
+   ========================================= */
 
 .game-info {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 180px));
     justify-content: center;
-    gap: 25px;
+    gap: 20px;
     margin: 30px 0;
 }
 
 .info-card {
     background-color: #242424;
     border: 1px solid #444;
-    padding: 20px;
+    padding: 20px 12px;
     text-align: center;
-    width: 180px;
+    width: 100%;
     border-radius: 8px;
 }
 
-.info-card h3 {
-    color: #d4af37;
-    font-size: 14px;
-}
+    .info-card h3 {
+        color: #d4af37;
+        font-size: 14px;
+    }
 
-.info-card p {
-    font-size: 28px;
-    margin-top: 10px;
-}
+    .info-card p {
+        font-size: clamp(23px, 4vw, 28px);
+        margin-top: 10px;
+    }
 
-/* Movie section */
+/* =========================================
+   MOVIE SECTION
+   ========================================= */
 
 .movie-section {
     background-color: #242424;
-    padding: 30px;
+    padding: clamp(15px, 4vw, 30px);
     margin-top: 35px;
     border-radius: 8px;
     text-align: center;
+    overflow: hidden;
 }
 
-.movie-section h2 {
-    color: #d4af37;
-    margin-bottom: 20px;
-}
+    .movie-section h2 {
+        color: #d4af37;
+        margin-bottom: 20px;
+    }
 
 #movieDisplay {
     color: #b5b5b5;
-    padding: 25px;
+    padding: clamp(10px, 3vw, 25px);
+    overflow-wrap: anywhere;
 }
 
-/* Instructions */
-
-.instructions {
-    margin-top: 40px;
-    padding: 25px;
-}
-
-.instructions h2 {
-    color: #d4af37;
-    margin-bottom: 20px;
-}
-
-.instructions ol {
-    padding-left: 25px;
-    line-height: 2;
-    color: #c5c5c5;
-}
-
-/* Footer */
-
-footer {
-    text-align: center;
-    padding: 25px;
-    margin-top: 40px;
-    border-top: 1px solid #444;
-    color: #777;
-}
-
-/* Mobile layout */
-
-@media (max-width: 600px) {
-
-    header h1 {
-        font-size: 25px;
+    #movieDisplay h4 {
+        color: #d4af37;
+        margin: 20px 0 10px;
     }
 
-    .game-info {
-        gap: 10px;
+    #movieDisplay ul {
+        list-style: none;
+        line-height: 2;
+        color: #ffffff;
     }
 
-    .info-card {
-        width: 50%;
+    #movieDisplay li {
+        border-bottom: 1px solid #444;
+        padding: 8px;
     }
 
-    .welcome h2 {
-        font-size: 24px;
-    }
+/* Movie posters */
 
-}
-#movieDisplay h4 {
-    color: #d4af37;
-    margin: 20px 0 10px;
-}
-
-#movieDisplay ul {
-    list-style: none;
-    line-height: 2;
-    color: #ffffff;
+.movie-poster {
+    display: block;
+    width: 180px;
+    max-width: 100%;
+    height: auto;
+    margin: 15px auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
-#movieDisplay li {
-    border-bottom: 1px solid #444;
-    padding: 5px;
+/* Make any other images inside the movie display responsive */
+
+#movieDisplay img {
+    max-width: 100%;
+    height: auto;
 }
 
-button:disabled {
-    opacity: 0.6;
-    cursor: wait;
-}
-/* Actor selection buttons */
+/* =========================================
+   ACTOR SELECTION
+   ========================================= */
+
 .cast-container {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
     margin-top: 15px;
 }
 
 .actor-button {
-    padding: 10px 16px;
+    padding: 12px 16px;
     background-color: #c5a059;
     color: #171717;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 14px;
+    min-height: 44px;
 }
 
-.actor-button:hover {
-    background-color: #e0bd76;
-}
-/* Connection history */
+/* =========================================
+   CONNECTION HISTORY
+   ========================================= */
 
 .history-container {
     margin-top: 30px;
-    padding: 20px;
+    padding: clamp(15px, 3vw, 20px);
     background-color: #252525;
     border-radius: 8px;
     text-align: left;
+    overflow-wrap: anywhere;
 }
 
-.history-container h3 {
-    color: #c5a059;
-    margin-bottom: 15px;
+    .history-container h3 {
+        color: #c5a059;
+        margin-bottom: 15px;
+    }
+
+    .history-container p {
+        padding: 10px 5px;
+        border-bottom: 1px solid #444;
+        font-size: 14px;
+    }
+
+/* =========================================
+   INSTRUCTIONS
+   ========================================= */
+
+.instructions {
+    margin-top: 40px;
+    padding: clamp(15px, 3vw, 25px);
 }
 
-.history-container p {
-    padding: 8px;
-    border-bottom: 1px solid #444;
+    .instructions h2 {
+        color: #d4af37;
+        margin-bottom: 20px;
+    }
+
+    .instructions ol {
+        padding-left: 25px;
+        line-height: 2;
+        color: #c5c5c5;
+    }
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+footer {
+    text-align: center;
+    padding: 25px 15px;
+    margin-top: 40px;
+    border-top: 1px solid #444;
+    color: #777;
+    font-size: 13px;
+}
+
+/* =========================================
+   TABLET LAYOUT
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    main {
+        max-width: 100%;
+    }
+
+    .movie-section {
+        margin-top: 20px;
+    }
+
+    .instructions {
+        margin-top: 25px;
+    }
+}
+
+/* =========================================
+   MOBILE LAYOUT
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 30px 15px;
+    }
+
+    .game-info {
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    .info-card {
+        padding: 15px 8px;
+    }
+
+    .movie-section {
+        padding: 15px 10px;
+    }
+
+    #movieDisplay {
+        padding: 10px 5px;
+    }
+
+    .cast-container {
+        gap: 8px;
+    }
+
+    .actor-button {
+        flex: 1 1 auto;
+        max-width: 100%;
+        padding: 12px;
+    }
+
+    .movie-poster {
+        width: 160px;
+    }
+
+    .history-container {
+        margin-top: 20px;
+    }
+
+    .welcome {
+        padding: 25px 10px;
+    }
+
+    footer {
+        margin-top: 25px;
+    }
+}
+
+/* =========================================
+   SMALL MOBILE SCREENS
+   ========================================= */
+
+@media (max-width: 380px) {
+
+    main {
+        padding: 12px;
+    }
+
+    .game-info {
+        gap: 8px;
+    }
+
+    .info-card h3 {
+        font-size: 12px;
+    }
+
+    .info-card p {
+        font-size: 23px;
+    }
+
+    button {
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+}
+
+/* =========================================
+   ACCESSIBILITY
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+/* =========================================
+   CURRENT MOVIE DISPLAY
+   ========================================= */
+
+.current-movie {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 30px;
+}
+
+    .current-movie h2 {
+        color: #d4af37;
+        font-size: clamp(22px, 4vw, 28px);
+        margin-top: 10px;
+    }
+
+.movie-year {
+    color: #b5b5b5;
+    font-size: 14px;
+}
+
+.movie-rating {
+    color: #d4af37;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.section-heading {
+    color: #ffffff;
+    margin: 30px 0 20px;
+    font-size: 20px;
+}
+
+/* =========================================
+   ACTOR CARDS
+   ========================================= */
+
+.cast-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.actor-card {
+    background-color: #303030;
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 10px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    font-size: 14px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.actor-image {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 6px;
+}
+
+.actor-placeholder {
+    width: 100%;
+    height: 130px;
+    background-color: #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    color: #d4af37;
+    font-size: 35px;
+}
+
+.actor-name {
+    font-size: 13px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.actor-card:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.actor-card.used-card {
+    border-color: #555;
+}
+
+/* =========================================
+   MOVIE CARDS
+   ========================================= */
+
+.film-description {
+    color: #b5b5b5;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+/* Movie grid */
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Individual movie card */
+
+.movie-card {
+    background-color: #303030;
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 0;
+    overflow: hidden;
+    color: #ffffff;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    white-space: normal;
+}
+
+.film-poster {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+}
+
+.film-placeholder {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    background-color: #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #b5b5b5;
+    padding: 10px;
+}
+
+.film-details {
+    padding: 12px;
+    flex-grow: 1;
+}
+
+    .film-details h3 {
+        font-size: 14px;
+        line-height: 1.4;
+        margin-bottom: 8px;
+        color: #ffffff;
+        overflow-wrap: anywhere;
+    }
+
+.film-year {
+    color: #b5b5b5;
+    font-size: 12px;
+}
+
+.film-rating {
+    color: #d4af37;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* =========================================
+   CARD INTERACTIONS
+   ========================================= */
+
+@media (hover: hover) {
+
+    .actor-card:hover:not(:disabled),
+    .movie-card:hover:not(:disabled) {
+        background-color: #3b3528;
+        border-color: #d4af37;
+        transform: translateY(-4px);
+    }
+}
+
+.actor-card:focus-visible,
+.movie-card:focus-visible {
+    outline: 3px solid #d4af37;
+    outline-offset: 3px;
+}
+
+/* =========================================
+   MOBILE CARD LAYOUT
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    .cast-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .actor-card {
+        padding: 7px;
+    }
+
+    .actor-image,
+    .actor-placeholder {
+        height: 105px;
+    }
+
+    .actor-name {
+        font-size: 11px;
+    }
+
+    .movie-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .film-details {
+        padding: 9px;
+    }
+
+        .film-details h3 {
+            font-size: 13px;
+        }
+}
+
+/* Very small screens */
+
+@media (max-width: 350px) {
+
+    .cast-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .movie-grid {
+        gap: 8px;
+    }
 }
