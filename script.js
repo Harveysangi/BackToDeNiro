@@ -573,6 +573,7 @@ function displayConnectionHistory() {
     movieDisplay.appendChild(historyContainer);
 
 }
+
 function displayWinScreen(actor, sharedMovie) {
 
     // End the game
@@ -581,43 +582,147 @@ function displayWinScreen(actor, sharedMovie) {
     // Clear the previous screen
     movieDisplay.innerHTML = "";
 
-    // Display winning message
+    // Create the main win screen container
+    const winContainer = document.createElement("div");
+    winContainer.className = "win-container";
+
+    // Create the victory heading
+    const trophy = document.createElement("div");
+    trophy.className = "win-trophy";
+    trophy.textContent = "🏆";
+
     const heading = document.createElement("h2");
-    heading.textContent = "YOU WIN!";
+    heading.className = "win-heading";
+    heading.textContent = "CONNECTION COMPLETE!";
 
     const message = document.createElement("p");
+    message.className = "win-message";
     message.textContent =
-        "Congratulations! You have connected to Robert De Niro.";
+        "Congratulations! You've successfully connected to Robert De Niro.";
 
-    // Display the actor who completed the connection
-    const actorName = document.createElement("h3");
-    actorName.textContent = "Your final connection: " + actor.name;
+    // Create the final movie section
+    const finalMovie = document.createElement("div");
+    finalMovie.className = "final-movie";
 
-    // Display the shared film
-    const filmMessage = document.createElement("p");
+    // Display the final movie poster
+    if (sharedMovie.poster_path) {
+
+        const poster = document.createElement("img");
+
+        poster.src = IMAGE_URL + sharedMovie.poster_path;
+        poster.alt = sharedMovie.title + " poster";
+        poster.className = "win-poster";
+
+        finalMovie.appendChild(poster);
+    }
+
+    // Display the final movie title
+    const filmTitle = document.createElement("h3");
+    filmTitle.textContent = sharedMovie.title;
 
     const releaseYear = sharedMovie.release_date
         ? sharedMovie.release_date.substring(0, 4)
         : "Unknown";
 
-    filmMessage.textContent =
-        "You connected through " +
-        sharedMovie.title + " (" + releaseYear + ")";
+    const filmYear = document.createElement("p");
+    filmYear.className = "win-film-year";
+    filmYear.textContent = releaseYear;
 
-    movieDisplay.appendChild(heading);
-    movieDisplay.appendChild(message);
-    movieDisplay.appendChild(actorName);
-    movieDisplay.appendChild(filmMessage);
+    finalMovie.appendChild(filmTitle);
+    finalMovie.appendChild(filmYear);
+
+    // Display the actor who completed the connection
+    const actorSection = document.createElement("div");
+    actorSection.className = "win-actor";
+
+    if (actor.profile_path) {
+
+        const actorImage = document.createElement("img");
+
+        actorImage.src = IMAGE_URL + actor.profile_path;
+        actorImage.alt = actor.name;
+        actorImage.className = "win-actor-image";
+
+        actorSection.appendChild(actorImage);
+    }
+
+    const actorLabel = document.createElement("p");
+    actorLabel.textContent = "Your final connection";
+
+    const actorName = document.createElement("h3");
+    actorName.textContent = actor.name;
+
+    actorSection.appendChild(actorLabel);
+    actorSection.appendChild(actorName);
+
+    // Create the game statistics section
+    const statsContainer = document.createElement("div");
+    statsContainer.className = "win-stats";
+
+    // Total moves
+    const movesCard = document.createElement("div");
+    movesCard.className = "win-stat-card";
+
+    const movesNumber = document.createElement("h3");
+    movesNumber.textContent = moveCountValue;
+
+    const movesLabel = document.createElement("p");
+    movesLabel.textContent = "TOTAL MOVES";
+
+    movesCard.appendChild(movesNumber);
+    movesCard.appendChild(movesLabel);
+
+    // Actor connections
+    const connectionsCard = document.createElement("div");
+    connectionsCard.className = "win-stat-card";
+
+    const connectionsNumber = document.createElement("h3");
+    connectionsNumber.textContent = connectionCountValue;
+
+    const connectionsLabel = document.createElement("p");
+    connectionsLabel.textContent = "ACTOR CONNECTIONS";
+
+    connectionsCard.appendChild(connectionsNumber);
+    connectionsCard.appendChild(connectionsLabel);
+
+    statsContainer.appendChild(movesCard);
+    statsContainer.appendChild(connectionsCard);
+
+    // Create Play Again button
+    const playAgainButton = document.createElement("button");
+
+    playAgainButton.className = "play-again-button";
+    playAgainButton.textContent = "PLAY AGAIN";
+
+    playAgainButton.addEventListener("click", function() {
+
+        // Trigger the existing start-game event
+        startButton.click();
+
+    });
+
+    // Add all elements to the win container
+    winContainer.appendChild(trophy);
+    winContainer.appendChild(heading);
+    winContainer.appendChild(message);
+    winContainer.appendChild(finalMovie);
+    winContainer.appendChild(actorSection);
+    winContainer.appendChild(statsContainer);
+    winContainer.appendChild(playAgainButton);
+
+    // Add the completed screen to the page
+    movieDisplay.appendChild(winContainer);
 
     gameTitle.textContent = "ROBERT DE NIRO FOUND!";
 
-    // Display the completed journey
+    // Display the completed journey underneath
     displayConnectionHistory();
 
     console.log("Game won!");
     console.log("Final actor:", actor);
     console.log("Connecting film:", sharedMovie);
 }
+
 /* ==========================================
     ACTOR FUNCTIONS
 ========================================== */
